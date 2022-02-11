@@ -1,6 +1,3 @@
-// Copyright 2013 The Flutter Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
 package dev.fluttercommunity.plus.androidintent;
 
 import android.app.Activity;
@@ -65,6 +62,25 @@ public final class IntentSender {
   }
 
   /**
+   * Like with {@code send}, creates and launches an intent with the given params, but wraps the
+   * {@code Intent} with {@code Intent.createChooser}.
+   */
+  public void launchChooser(Intent intent, String title) {
+    send(Intent.createChooser(intent, title));
+  }
+
+  /** Creates an intent and sends it as Broadcast. */
+  public void sendBroadcast(Intent intent) {
+    if (applicationContext == null) {
+      Log.wtf(TAG, "Trying to send broadcast before the applicationContext was initialized.");
+      return;
+    }
+
+    Log.v(TAG, "Sending broadcast " + intent);
+    applicationContext.sendBroadcast(intent);
+  }
+
+  /**
    * Verifies the given intent and returns whether the application context class can resolve it.
    *
    * <p>This will fail to create and send the intent if {@code applicationContext} hasn't been set *
@@ -73,9 +89,9 @@ public final class IntentSender {
    * <p>This currently only supports resolving activities.
    *
    * @param intent Fully built intent.
-   * @see #buildIntent(String, Integer, String, Uri, Bundle, String, ComponentName, String)
    * @return Whether the package manager found {@link android.content.pm.ResolveInfo} using its
    *     {@link PackageManager#resolveActivity(Intent, int)} method.
+   * @see #buildIntent(String, Integer, String, Uri, Bundle, String, ComponentName, String)
    */
   boolean canResolveActivity(Intent intent) {
     if (applicationContext == null) {
@@ -84,7 +100,6 @@ public final class IntentSender {
     }
 
     final PackageManager packageManager = applicationContext.getPackageManager();
-
     return packageManager.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY) != null;
   }
 
@@ -170,10 +185,9 @@ public final class IntentSender {
       if (componentName != null) {
         intent.setComponent(componentName);
       }
-      if (intent.resolveActivity(applicationContext.getPackageManager()) == null) {
-        Log.i(TAG, "Cannot resolve explicit intent - ignoring package");
-        intent.setPackage(null);
-      }
+    }
+    if (intent.resolveActivity(applicationContext.getPackageManager()) == null) {
+      Log.i(TAG, "Cannot resolve explicit intent");
     }
 
     return intent;
