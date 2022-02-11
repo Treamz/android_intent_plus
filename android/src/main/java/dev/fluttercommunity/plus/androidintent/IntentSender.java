@@ -1,8 +1,7 @@
 // Copyright 2013 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-
-package io.flutter.plugins.androidintent;
+package dev.fluttercommunity.plus.androidintent;
 
 import android.app.Activity;
 import android.content.ComponentName;
@@ -14,7 +13,6 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import androidx.annotation.Nullable;
-
 import java.net.URI;
 import java.util.ArrayList;
 
